@@ -43,7 +43,7 @@ public class Driver {
                 treeHelper.parseInput(line, "create");
                 line = fileProcessor.poll();
             }
-            treeHelper.printNodes(treeHelper.getTree(1));
+            treeHelper.printNodes(treeHelper.getTree(0));
         }
         catch(Exception e){
           e.printStackTrace();

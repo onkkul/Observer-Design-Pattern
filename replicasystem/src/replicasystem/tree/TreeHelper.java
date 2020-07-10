@@ -23,7 +23,7 @@ public class TreeHelper implements TreeI{
     public TreeNodeI currentNode = null;
     public TreeNodeI newNodes[] = new TreeNodeI[3];
 
-    public  TreeNodeI trees[] = new TreeNodeI[3];
+    public TreeNodeI trees[] = new TreeNodeI[3];
 
     public int bNumber = Integer.MIN_VALUE;
 
@@ -168,7 +168,6 @@ public class TreeHelper implements TreeI{
         this.currentNode = searchNode(trees[0], bNumber);
         if (this.currentNode == null)
             this.currentNode = createNode("one", bNumber);
-        
         addNodeDetails(details[0], details[1],
             details[3], gpa, skills);
         System.out.println("Node " + bNumber + " Inserted successfully \n");
