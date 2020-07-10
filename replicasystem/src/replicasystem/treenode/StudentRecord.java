@@ -11,8 +11,7 @@ import java.io.FileInputStream;
 
 import replicasystem.treenode.TreeNodeI;
 
-public class TreeNode implements TreeNodeI{
-    private TreeNodeI parent = null;
+public class StudentRecord implements TreeNodeI{
     private TreeNodeI leftChild = null;
     private TreeNodeI rightChild = null;
 
@@ -22,19 +21,18 @@ public class TreeNode implements TreeNodeI{
     
     private String major = null;
     private double gpa = Integer.MIN_VALUE;
-    private String skills = null;
+    private String[] skills = null;
 
-    private TreeNodeI observerOne = null;
-    private TreeNodeI observerTwo = null;
+    private TreeNodeI[] observers = new TreeNodeI[2];
 
-    public TreeNode(int bNumber){
+    public StudentRecord(int bNumber){
         this.bNumber = bNumber;
     }
 
 
     @Override
     public void insertValues(String firstName, String lastName,
-        String major, double gpa, String skills){
+        String major, double gpa, String[] skills){
         this.firstName = firstName;
         this.lastName = lastName;
         
@@ -43,12 +41,13 @@ public class TreeNode implements TreeNodeI{
         this.skills = skills;
 
         notifyObservers();
+        // printNode();
     }
 
 
     @Override
     public void updateValues(String firstName,String lastName,
-        String major, double gpa, String skills){
+        String major, double gpa, String[] skills){
         if (firstName != null)
             this.firstName = firstName;
         if (lastName != null)
@@ -61,41 +60,31 @@ public class TreeNode implements TreeNodeI{
         if (skills != null)
             this.skills = skills;
 
-        notifyObservers();
+        // notifyObservers();
+        printNode();
     }
 
 
     @Override
     public void printNode(){
+        System.out.println("B-Number: "+ this.bNumber);
+        System.out.println("Name: "+this.firstName + " " + this.lastName);
+        System.out.println("Major: " + this.major + " GPA:" + this.gpa);
+        System.out.print("Skills: ");
+            for (String s:skills)
+                System.out.print(s+" ");
+        System.out.println("\n----------------------------------");
 
     }
 
 
     @Override
-    public void registerObserver(TreeNodeI firstObserver, TreeNodeI secondObeserver){
-        this.observerOne = firstObserver;
-        this.observerTwo = secondObeserver;
-    }
-
-    @Override
-    public void unregisterObserver(TreeNodeI observer){
-        if (observer.getBnumber() == this.observerOne.getBnumber()){
-            this.observerOne = null;
-        }
-        else if (observer.getBnumber() == this.observerTwo.getBnumber()) {
-            this.observerTwo = null;
-        }
-        // else{
-        //     throw IOException
-        // }
-    }
-
+    public TreeNodeI[] getObservers(){  return this.observers;  }
     @Override
     public void notifyObservers(){
-        this.observerTwo.receiveNotification(this);
-        this.observerOne.receiveNotification(this);
+        this.observers[0].receiveNotification(this);
+        this.observers[1].receiveNotification(this);
     }
-
     @Override
     public void receiveNotification(TreeNodeI sender){
         if (sender != null){
@@ -106,9 +95,32 @@ public class TreeNode implements TreeNodeI{
             this.major = sender.getMajor();
             this.gpa = sender.getGPA();
             this.skills = sender.getSkills();
+            this.observers = sender.getObservers();
         }
         return;
     }
+
+    @Override
+    public void registerObservers(TreeNodeI firstObserver, TreeNodeI secondObeserver){
+        this.observers[0] = firstObserver;
+        this.observers[1] = secondObeserver;
+    }
+
+    @Override
+    public void unregisterObserver(TreeNodeI observer){
+        if (observer.getBnumber() == this.observers[0].getBnumber()){
+            this.observers[0] = null;
+        }
+        else if (observer.getBnumber() == this.observers[1].getBnumber()) {
+            this.observers[1] = null;
+        }
+        // else{
+        //     throw IOException
+        // }
+    }
+
+
+
 
     @Override
     public int getBnumber()         {   return this.bNumber;    }
@@ -123,7 +135,7 @@ public class TreeNode implements TreeNodeI{
     @Override
     public double getGPA()          {   return this.gpa;        }
     @Override
-    public String getSkills()       {   return this.skills;     }
+    public String[] getSkills()       {   return this.skills;     }
     
     @Override
     public TreeNodeI getRightChild(){   return this.rightChild; }
@@ -140,9 +152,5 @@ public class TreeNode implements TreeNodeI{
     public void setLeftChild(TreeNodeI leftChild){
         this.leftChild = leftChild;
         return;
-    }
-    @Override
-    public void setParent(TreeNodeI parent){
-        this.parent = parent;
     }
 }

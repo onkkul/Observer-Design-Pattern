@@ -10,7 +10,9 @@ import java.io.FileInputStream;
 
 import replicasystem.util.FileProcessor;
 import replicasystem.treenode.TreeNodeI;
-import replicasystem.treenode.TreeNode;
+import replicasystem.treenode.StudentRecord;
+import replicasystem.tree.TreeI;
+import replicasystem.tree.TreeHelper;
 
 /**
  * @author John Doe
@@ -29,27 +31,24 @@ public class Driver {
     *
     * @return void
     */
-	// private static void executeProcess(String inputFile, String outputFile){
- //        try {
+	private static void executeProcess(String inputFile, String outputFile){
+        try {
 
- //            FileProcessor fileProcessor = new FileProcessor(inputFile); 
+            FileProcessor fileProcessor = new FileProcessor(inputFile); 
 
- //            SimpleStateFactoryI stateFactoryIn = null;
- //            ContextI channel = new ChannelContext(stateFactoryIn, outputFile);
+            TreeI treeHelper = new TreeHelper();
             
- //            String line = fileProcessor.poll();
- //            while(line != null){
- //                channel.parseInput(line);
- //                line = fileProcessor.poll();
- //            }
-
- //            channel.persistResult();
- //        }
- //        catch(Exception e){
- //          e.printStackTrace();
- //        }
-
-	// }
+            String line = fileProcessor.poll();
+            while(line != null){
+                treeHelper.parseInput(line, "create");
+                line = fileProcessor.poll();
+            }
+            treeHelper.printNodes(treeHelper.getTree(1));
+        }
+        catch(Exception e){
+          e.printStackTrace();
+        }
+    }
 	public static void main(String[] args) throws Exception {
 
 		/*
@@ -69,7 +68,7 @@ public class Driver {
             System.out.println(fileNames[i]);
         }
 		System.out.println("Hello World! Lets get started with the assignment");
-		// executeProcess(args[0], args[1]);
+		executeProcess(args[0], args[1]);
 	}
 }   
 

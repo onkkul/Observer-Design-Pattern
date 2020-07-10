@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
-public interface TreeNodeI{
+public interface SubjectI{
 
     public void insertValues(String firstName, String lastName,
         String major, double gpa, String[] skills);
