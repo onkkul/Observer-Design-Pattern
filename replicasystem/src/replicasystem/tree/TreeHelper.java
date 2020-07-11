@@ -63,7 +63,7 @@ public class TreeHelper implements TreeI{
 
     @Override
     public TreeNodeI createNode(String tree, int bNumber){
-        System.out.println("Creating Node for: " + bNumber);
+        // System.out.println("Creating Node for: " + bNumber);
         for (int i = 0; i < 3; i++){
             this.newNodes[i] = new StudentRecord(bNumber);
             if (roots == false)
@@ -71,20 +71,16 @@ public class TreeHelper implements TreeI{
             else
                 insertNode(this.trees[i], this.newNodes[i]);
         }
+        
         roots = true;
 
-        if (tree == "one"){
-            this.newNodes[0].registerObservers(this.newNodes[1], this.newNodes[2]);
-            this.currentNode = this.newNodes[0];
-        } 
-        if (tree == "two"){
-            this.newNodes[1].registerObservers(this.newNodes[0], this.newNodes[2]);
-            this.currentNode = this.newNodes[1];
-        }
-        if (tree == "three"){
-            this.newNodes[2].registerObservers(this.newNodes[0], this.newNodes[1]);
-            this.currentNode = this.newNodes[2];
-        }
+        this.newNodes[0].registerObservers(this.newNodes[1], this.newNodes[2]);
+        this.newNodes[1].registerObservers(this.newNodes[0], this.newNodes[2]);
+        this.newNodes[2].registerObservers(this.newNodes[0], this.newNodes[1]);
+        
+        if (tree == "one")  {   this.currentNode = this.newNodes[0];    } 
+        if (tree == "two")  {   this.currentNode = this.newNodes[1];    }
+        if (tree == "three"){   this.currentNode = this.newNodes[2];    }
 
         return this.currentNode;
     }
@@ -93,7 +89,7 @@ public class TreeHelper implements TreeI{
     @Override
     public void addNodeDetails(String firstName, String lastName,
         String major, double gpa, String[] skills){
-        System.out.println("adding details for : " + this.currentNode.getBnumber());
+        // System.out.println("adding details for : " + this.currentNode.getBnumber());
         this.currentNode.insertValues(firstName, lastName,
                 major, gpa, skills);
     }
@@ -110,10 +106,8 @@ public class TreeHelper implements TreeI{
 
 
     @Override
-    public void updateNode(String firstName, String lastName,
-        String major, double gpa, String[] skills){
-        this.currentNode.updateValues(firstName, lastName,
-                major, gpa, skills);
+    public void updateNode(String[] oldValues, String[] newValues){
+        this.currentNode.updateValues(oldValues, newValues);
     }
 
 
@@ -129,17 +123,8 @@ public class TreeHelper implements TreeI{
 
     // Main function
     @Override
-    public void parseInput(String line, String typeOfInput){
-        System.out.println("Parsing the input");
-        /*
-         * Do not create this.trees. constructor will do it
-         * Create Nodes
-         * Insert Node
-         * Add details to the nodes
-         * Search Node 
-         * Update Details
-         * Print Node         // 1234:John,Doe,3.9,ComputerScience,Skill1,Skill2,Skill3,Skill4,Skill5
-         */
+    public void parseInput(String line){
+        // System.out.println("Parsing the input");
 
         String inputArray[]= line.split(":");
         bNumber = Integer.parseInt(inputArray[0]);
@@ -175,6 +160,32 @@ public class TreeHelper implements TreeI{
     }
 
 
+    @Override
+    public void modifyInput(String line){
+        // Handle empty in new Value
+        String[] inputArray = line.split(",");
+
+        int treeNumber = Integer.parseInt(inputArray[0]);
+        bNumber = Integer.parseInt(inputArray[1]);
+
+        String[] oldValues = new String[inputArray.length-2];
+        String[] newValues = new String[inputArray.length-2];
+        for (int i = 2; i<inputArray.length;i++){
+            String[] temp = inputArray[i].split(":");
+            oldValues[i-2] = temp[0];
+            newValues[i-2] = temp[1];
+        }
+
+        // for(int i = 0; i<oldValues.length; i++){
+        //     System.out.println(oldValues[i] + "\t" + newValues[i]);
+        // }
+        this.currentNode = searchNode(trees[treeNumber], bNumber);
+        if (this.currentNode == null)
+            this.currentNode = createNode("one", bNumber);  // configure tree number here
+            // throw ClassNotFoundException()
+        else
+            updateNode(oldValues, newValues);
+    }
     public void resetDetails(){
         return;
     }
@@ -183,4 +194,15 @@ public class TreeHelper implements TreeI{
     public TreeNodeI getTree(int index){
         return this.trees[index];
     }
+
+        /*
+         * Do not create this.trees. constructor will do it
+         * Create Nodes
+         * Insert Node
+         * Add details to the nodes
+         * Search Node 
+         * Update Details
+         * Print Node         // 1234:John,Doe,3.9,ComputerScience,Skill1,Skill2,Skill3,Skill4,Skill5
+         */
+
 }

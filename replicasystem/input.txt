@@ -2,11 +2,3 @@
 2345:Leo,Decaprio,4.0,Drama,Skill1,Skill2,Skill3,Skill4,Skill5
 1111:Christi,Nolan,4.0,ScienceFiction,Skill1,Skill2,Skill3,Skill4,Skill5
 1112:Tom,Hanks,3.7,Psychology,Skill1,Skill2,Skill3,Skill4,Skill5
-1113:Tom,Cruize,3.5,Action,Skill1,Skill2,Skill3,Skill4,Skill5
-1114:Cristian,Bale,3.6,SuperHero,Skill1,Skill2,Skill3,Skill4,Skill5
-1115:Salman,Khan,2.9,Driving,Skill1,Skill2,Skill3,Skill4,Skill5
-1116:Narendra,Modi,4.0,Acting,Skill1,Skill2,Skill3,Skill4,Skill5
-1117:Rahul,Gandhi,3.8,GoodForNothing,Skill1,Skill2,Skill3,Skill4,Skill5
-1118:Momota,Banerji,3.2,Psyche,Skill1,Skill2,Skill3,Skill4,Skill5
-1119:Uddhav,Thakrey,2.2,Prop,Skill1,Skill2,Skill3,Skill4,Skill5
-1120:Onkar,Kulkarni,3.8,ComputerScience,Skill1,Skill2,Skill3,Skill4,Skill5

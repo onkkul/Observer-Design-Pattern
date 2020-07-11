@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 
 import replicasystem.treenode.TreeNodeI;
+import replicasystem.treenode.SubjectI;
+import replicasystem.treenode.ObserverI;
 
 public class StudentRecord implements TreeNodeI{
+
     private TreeNodeI leftChild = null;
     private TreeNodeI rightChild = null;
 
@@ -24,12 +27,34 @@ public class StudentRecord implements TreeNodeI{
     private String[] skills = null;
 
     private TreeNodeI[] observers = new TreeNodeI[2];
+    private static int uniqueID = 0;
+    private static int nodeID = 0;
+
 
     public StudentRecord(int bNumber){
         this.bNumber = bNumber;
+        uniqueID++;
+        this.nodeID = uniqueID;
     }
 
 
+    public String[] mergeSkills(String[] oldSkills, String[] newSkills){
+        if (oldSkills == null)
+            return newSkills;
+        else{
+            String[]temp = new String[oldSkills.length+newSkills.length];
+            int count = 0;
+
+            for(int i = 0; i < oldSkills.length; i++) { 
+             temp[i] = oldSkills[i];
+             count++;
+            } 
+            for(int j = 0; j < newSkills.length;j++) { 
+             temp[count++] = newSkills[j];
+            }
+            return temp;
+        }
+    }
     @Override
     public void insertValues(String firstName, String lastName,
         String major, double gpa, String[] skills){
@@ -38,30 +63,31 @@ public class StudentRecord implements TreeNodeI{
         
         this.major = major;
         this.gpa = gpa;
-        this.skills = skills;
 
+
+        this.skills = mergeSkills(this.skills, skills);
         notifyObservers();
-        // printNode();
     }
 
 
+    public void replaceSkill(String oldSkill, String newSkill){
+        for(int i = 0; i<this.skills.length;i++){
+            if (this.skills[i].equals(oldSkill))
+                this.skills[i] = newSkill;
+        }
+    }
     @Override
-    public void updateValues(String firstName,String lastName,
-        String major, double gpa, String[] skills){
-        if (firstName != null)
-            this.firstName = firstName;
-        if (lastName != null)
-            this.lastName = lastName;
-        
-        if (major != null)
-            this.major = major;
-        if (gpa != Integer.MIN_VALUE)
-            this.gpa = gpa;
-        if (skills != null)
-            this.skills = skills;
-
-        // notifyObservers();
-        printNode();
+    public void updateValues(String[] oldValues, String[] newValues){
+        for (int i = 0; i<oldValues.length; i++){
+            if (this.firstName.equals(oldValues[i]))
+                this.firstName = newValues[i];
+            if (this.lastName.equals(oldValues[i]))
+                this.lastName = newValues[i];
+            if (this.major.equals(oldValues[i]))
+                this.major = newValues[i];
+            replaceSkill(oldValues[i], newValues[i]);
+        }
+        notifyObservers();
     }
 
 
@@ -77,6 +103,43 @@ public class StudentRecord implements TreeNodeI{
 
     }
 
+    @Override
+    public int getBnumber()         {   return this.bNumber;    }
+
+    @Override
+    public String getFirstName()    {   return this.firstName;  }
+    @Override
+    public String getLastName()     {   return this.lastName;   }
+
+    @Override
+    public String getMajor()        {   return this.major;      }
+    @Override
+    public double getGPA()          {   return this.gpa;        }
+    @Override
+    public String[] getSkills()     {   return this.skills;     }
+    
+    @Override
+    public TreeNodeI getRightChild(){   return this.rightChild; }
+    @Override
+    public TreeNodeI getLeftChild() {   return this.leftChild;  }
+
+
+    @Override
+    public void setRightChild(TreeNodeI rightChild){
+        this.rightChild = rightChild;
+        return;
+    }
+    @Override
+    public void setLeftChild(TreeNodeI leftChild){
+        this.leftChild = leftChild;
+        return;
+    }
+
+
+    @Override
+    public int getNodeID(){
+        return this.nodeID;
+    }
 
     @Override
     public TreeNodeI[] getObservers(){  return this.observers;  }
@@ -108,49 +171,11 @@ public class StudentRecord implements TreeNodeI{
 
     @Override
     public void unregisterObserver(TreeNodeI observer){
-        if (observer.getBnumber() == this.observers[0].getBnumber()){
+        if (observer.getNodeID() == this.observers[0].getNodeID()){
             this.observers[0] = null;
         }
-        else if (observer.getBnumber() == this.observers[1].getBnumber()) {
+        else if (observer.getNodeID() == this.observers[1].getNodeID()) {
             this.observers[1] = null;
         }
-        // else{
-        //     throw IOException
-        // }
-    }
-
-
-
-
-    @Override
-    public int getBnumber()         {   return this.bNumber;    }
-
-    @Override
-    public String getFirstName()    {   return this.firstName;  }
-    @Override
-    public String getLastName()     {   return this.lastName;   }
-
-    @Override
-    public String getMajor()        {   return this.major;      }
-    @Override
-    public double getGPA()          {   return this.gpa;        }
-    @Override
-    public String[] getSkills()       {   return this.skills;     }
-    
-    @Override
-    public TreeNodeI getRightChild(){   return this.rightChild; }
-    @Override
-    public TreeNodeI getLeftChild() {   return this.leftChild;  }
-
-
-    @Override
-    public void setRightChild(TreeNodeI rightChild){
-        this.rightChild = rightChild;
-        return;
-    }
-    @Override
-    public void setLeftChild(TreeNodeI leftChild){
-        this.leftChild = leftChild;
-        return;
     }
 }

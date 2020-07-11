@@ -31,19 +31,28 @@ public class Driver {
     *
     * @return void
     */
-	private static void executeProcess(String inputFile, String outputFile){
+	private static void executeProcess(String inputFile, String modifyFile){
         try {
 
-            FileProcessor fileProcessor = new FileProcessor(inputFile); 
-
             TreeI treeHelper = new TreeHelper();
+
+            FileProcessor fileProcessor = new FileProcessor(inputFile); 
             
             String line = fileProcessor.poll();
             while(line != null){
-                treeHelper.parseInput(line, "create");
+                treeHelper.parseInput(line);
                 line = fileProcessor.poll();
             }
-            treeHelper.printNodes(treeHelper.getTree(0));
+
+            fileProcessor = new FileProcessor(modifyFile); 
+            
+            line = fileProcessor.poll();
+            while(line != null){
+                treeHelper.modifyInput(line);
+                line = fileProcessor.poll();
+            }
+
+            treeHelper.printNodes(treeHelper.getTree(2));
         }
         catch(Exception e){
           e.printStackTrace();
