@@ -7,7 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
-public class Results implements FileDisplayInterface, StdoutDisplayInterface {
+import replicasystem.treenode.TreeNodeI;
+import replicasystem.treenode.SubjectI;
+import replicasystem.treenode.ObserverI;
+
+public class Results implements FileDisplayInterface {
 
     private File outputFile;
     private String appendLine;
@@ -29,7 +33,7 @@ public class Results implements FileDisplayInterface, StdoutDisplayInterface {
                 System.out.println("File created: " + this.outputFile.getName());
             }
             else {
-                new FileWriter(outputFile, false).close();
+                new FileWriter(this.outputFile, false).close();
             }
         } 
         catch (IOException fileCreationError) {
@@ -46,21 +50,19 @@ public class Results implements FileDisplayInterface, StdoutDisplayInterface {
     * @return void
     */
     public void writeLine(String line){
-        appendLine = appendLine + line;
+        this.appendLine = this.appendLine + line;
     }
 
 
     /**
-    * Helper function that calls functions to display results.
+    * Helper function to writeResult.
     *
     * @exception None
     *
     * @return void
     */
     public void persistResult(){
-        appendLine = appendLine.replace("null", "");
-        writeFile();
-        displayOutput();
+        this.appendLine = this.appendLine.replace("null", "");
     }
 
 
@@ -73,29 +75,16 @@ public class Results implements FileDisplayInterface, StdoutDisplayInterface {
     */
     @Override
     public void writeFile(){
+        persistResult();
         try{
             this.outputWriter = new BufferedWriter(new FileWriter(this.outputFile, true));
-            outputWriter.write(appendLine);
-            outputWriter.close();
+            this.outputWriter.write(this.appendLine);
+            this.outputWriter.close();
         }
 
-        catch(IOException writeRotatedError){
-            writeRotatedError.printStackTrace();
+        catch(IOException failedToWriteFile){
+            failedToWriteFile.printStackTrace();
         }
-        return;
-    }
-
-
-    /**
-    * Writes results to console
-    * 
-    * @exception None
-    *
-    * @return void
-    */
-    @Override
-    public void displayOutput(){
-        System.out.println(appendLine);
         return;
     }
 }

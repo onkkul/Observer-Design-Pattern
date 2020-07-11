@@ -9,10 +9,12 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 
 import replicasystem.util.FileProcessor;
+import replicasystem.util.Results;
 import replicasystem.treenode.TreeNodeI;
 import replicasystem.treenode.StudentRecord;
 import replicasystem.tree.TreeI;
 import replicasystem.tree.TreeHelper;
+
 
 /**
  * @author John Doe
@@ -28,10 +30,11 @@ public class Driver {
     * @exception SecurityException On not having necessary read permissions to the input file.
     * @exception FileNotFoundException On input file not found.
     * @exception IOException On any I/O errors while reading lines from input file.
-    *
+    * @exception ArrayIndexOutOfBoundsException when BNumber or TreeIndex is invalid.
     * @return void
     */
 	private static void executeProcess(String inputFile, String modifyFile){
+        Results[] all_results = new Results[3];
         try {
 
             TreeI treeHelper = new TreeHelper();
@@ -52,7 +55,13 @@ public class Driver {
                 line = fileProcessor.poll();
             }
 
-            treeHelper.printNodes(treeHelper.getTree(2));
+            for (int i = 0; i < 3; i++){
+                String filename = "out"+Integer.toString(i);
+                Results result = new Results(filename);
+                treeHelper.printNodes(result, treeHelper.getTree(i));
+                all_results[i] = result;
+                System.out.println("Tree " + i + " written succesfully to " + filename);
+            }
         }
         catch(Exception e){
           e.printStackTrace();
@@ -76,7 +85,6 @@ public class Driver {
         for (int i = 0; i<7;i++){
             System.out.println(fileNames[i]);
         }
-		System.out.println("Hello World! Lets get started with the assignment");
 		executeProcess(args[0], args[1]);
 	}
 }   

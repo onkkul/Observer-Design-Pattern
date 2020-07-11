@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.FileInputStream;
-
+import replicasystem.util.Results;
 import replicasystem.treenode.TreeNodeI;
 
 public interface TreeI{
@@ -22,11 +22,10 @@ public interface TreeI{
 
     public void updateNode(String[] oldValues, String[] newValues);
 
-    public void printNodes(TreeNodeI tree);
-
     public TreeNodeI getTree(int index);
-    public void parseInput(String line);
+    public void printNodes(Results result, TreeNodeI tree);
 
+    public void parseInput(String line);
     public void modifyInput(String line);
 
 }

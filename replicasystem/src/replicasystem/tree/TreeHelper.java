@@ -16,31 +16,34 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
+import replicasystem.util.Results;
 import replicasystem.treenode.TreeNodeI;
 import replicasystem.treenode.StudentRecord;
 
 public class TreeHelper implements TreeI{
     public TreeNodeI currentNode = null;
+    public TreeNodeI trees[] = new TreeNodeI[3];
     public TreeNodeI newNodes[] = new TreeNodeI[3];
 
-    public TreeNodeI trees[] = new TreeNodeI[3];
-
-    public int bNumber = Integer.MIN_VALUE;
-
-    public String firstName = null;
-    public String lastName = null;
-    
-    public String major = null;
-    public double gpa = Integer.MIN_VALUE;
-    public String[] skills = null;
-    public String details[];
     public boolean roots = false;
+
     /**
-     * Create all three this.trees
-     * @return a set of all three tree heads
+     * Constructor for TreeHelper
+     *
+     * @exception
+     *
+     * @return void
      */
     public TreeHelper(){}
 
+
+    /**
+     * Insert created node in the tree.
+     *
+     * @exception
+     *
+     * @return void
+     */
     public void insertNode(TreeNodeI tree, TreeNodeI node){
         if (tree.getBnumber() < node.getBnumber()){
             TreeNodeI rightChild = tree.getRightChild();
@@ -61,9 +64,15 @@ public class TreeHelper implements TreeI{
         }
     }
 
+    /**
+     * Create node and set up the observers.
+     *
+     * @exception
+     *
+     * @return TreeNodeI the createNode node
+     */
     @Override
     public TreeNodeI createNode(String tree, int bNumber){
-        // System.out.println("Creating Node for: " + bNumber);
         for (int i = 0; i < 3; i++){
             this.newNodes[i] = new StudentRecord(bNumber);
             if (roots == false)
@@ -71,9 +80,7 @@ public class TreeHelper implements TreeI{
             else
                 insertNode(this.trees[i], this.newNodes[i]);
         }
-        
         roots = true;
-
         this.newNodes[0].registerObservers(this.newNodes[1], this.newNodes[2]);
         this.newNodes[1].registerObservers(this.newNodes[0], this.newNodes[2]);
         this.newNodes[2].registerObservers(this.newNodes[0], this.newNodes[1]);
@@ -86,15 +93,28 @@ public class TreeHelper implements TreeI{
     }
 
 
+    /**
+     * Add node details such as name and major to the created node.
+     *
+     * @exception
+     *
+     * @return void
+     */
     @Override
     public void addNodeDetails(String firstName, String lastName,
         String major, double gpa, String[] skills){
-        // System.out.println("adding details for : " + this.currentNode.getBnumber());
         this.currentNode.insertValues(firstName, lastName,
-                major, gpa, skills);
+            major, gpa, skills);
     }
 
 
+    /**
+     * Search a node in asked tree
+     *
+     * @exception
+     *
+     * @return TreeNodeI Tree Node in that tree (null if not present)
+     */
     @Override
     public TreeNodeI searchNode(TreeNodeI tree, int bNumber){
         if ((tree == null) || (tree.getBnumber()  == bNumber)) 
@@ -105,37 +125,80 @@ public class TreeHelper implements TreeI{
     }
 
 
+    /**
+     * Update the node for inputs from modify file
+     *
+     * @exception
+     *
+     * @return void
+     */
     @Override
     public void updateNode(String[] oldValues, String[] newValues){
         this.currentNode.updateValues(oldValues, newValues);
     }
 
 
-    @Override
-    public void printNodes(TreeNodeI tree){
+    /**
+     * Recursively traverse tree to get the skills
+     *
+     * @exception
+     *
+     * @return void
+     */
+    public void printHelper(Results result, TreeNodeI tree){
         if (tree != null){
-            printNodes(tree.getLeftChild());
-            tree.printNode();
-            printNodes(tree.getRightChild());
+            printHelper(result, tree.getLeftChild());
+            String temp = tree.printNode();
+            result.writeLine(temp+"\n");
+            printHelper(result, tree.getRightChild());
         }
     }
 
-
-    // Main function
+    /**
+     * Funciton to write the skills to file.
+     *
+     * @exception
+     *
+     * @return void
+     */
     @Override
-    public void parseInput(String line){
-        // System.out.println("Parsing the input");
+    public void printNodes(Results result, TreeNodeI tree){
+        printHelper(result, tree);
+        result.writeFile();
+    }
 
-        String inputArray[]= line.split(":");
+
+    /**
+     * Process the input from "input" file
+     *
+     * @exception IndexOutOfBoundsException
+     * @exception NullPointerException
+     * 
+     * @return void
+     */
+    @Override
+    public void parseInput(String line)
+        throws IndexOutOfBoundsException, NullPointerException{
+        int bNumber = 0;
+        int index = 0;
+        int skill_index = 0;
+        
+        double gpa = 0.0;
+
+        String[] skills;
+        String[] details;
+        String[] inputArray;
+
+        inputArray = line.split(":");
+
         bNumber = Integer.parseInt(inputArray[0]);
-
+        if (bNumber < 0 || bNumber > 9999)
+            throw new IndexOutOfBoundsException ("Invalid B number");
         inputArray = inputArray[1].split(",");
 
         details = new String[inputArray.length -1];
         skills = new String[inputArray.length-4];
-        
-        int index = 0;
-        int skill_index = 0;
+
         for (int i = 0; i < inputArray.length; i++){
             if (inputArray[i].contains(".")){
                 gpa = Double.parseDouble(inputArray[i]);
@@ -156,53 +219,69 @@ public class TreeHelper implements TreeI{
         addNodeDetails(details[0], details[1],
             details[3], gpa, skills);
         System.out.println("Node " + bNumber + " Inserted successfully \n");
-
+        // resetDetails();
+        this.currentNode = null;
     }
 
 
+    /**
+     * Process the input from "modify" file
+     *
+     * @exception
+     *
+     * @return void
+     */
     @Override
-    public void modifyInput(String line){
+    public void modifyInput(String line)
+        throws IndexOutOfBoundsException{
         // Handle empty in new Value
-        String[] inputArray = line.split(",");
+        int treeNumber;
+        int bNumber;
+        String[] inputArray;
+        String[] oldValues;
+        String[] newValues;
 
-        int treeNumber = Integer.parseInt(inputArray[0]);
+        inputArray = line.split(",");
+
+        treeNumber = Integer.parseInt(inputArray[0]);
         bNumber = Integer.parseInt(inputArray[1]);
 
-        String[] oldValues = new String[inputArray.length-2];
-        String[] newValues = new String[inputArray.length-2];
+        if(treeNumber < 0 || treeNumber > this.trees.length)
+            throw new IndexOutOfBoundsException ("Invalid Tree Index");
+        if (bNumber < 1000 || bNumber > 9999)
+            throw new IndexOutOfBoundsException ("Invalid B number");
+
+        oldValues = new String[inputArray.length-2];
+        newValues = new String[inputArray.length-2];
+
         for (int i = 2; i<inputArray.length;i++){
             String[] temp = inputArray[i].split(":");
             oldValues[i-2] = temp[0];
             newValues[i-2] = temp[1];
         }
 
-        // for(int i = 0; i<oldValues.length; i++){
-        //     System.out.println(oldValues[i] + "\t" + newValues[i]);
-        // }
         this.currentNode = searchNode(trees[treeNumber], bNumber);
         if (this.currentNode == null)
             this.currentNode = createNode("one", bNumber);  // configure tree number here
             // throw ClassNotFoundException()
         else
             updateNode(oldValues, newValues);
-    }
-    public void resetDetails(){
-        return;
+        this.currentNode = null;
     }
 
+
+    /**
+     * Return tree specified with index
+     *
+     * @exception ArrayIndexOutOfBoundsException // Index out of range
+     *
+     * @return TreeNodeI
+     */
     @Override
-    public TreeNodeI getTree(int index){
-        return this.trees[index];
+    public TreeNodeI getTree(int index) 
+        throws ArrayIndexOutOfBoundsException{
+            if (index > this.trees.length)
+                throw new ArrayIndexOutOfBoundsException("Invalid Tree Index");
+            return this.trees[index];
     }
-
-        /*
-         * Do not create this.trees. constructor will do it
-         * Create Nodes
-         * Insert Node
-         * Add details to the nodes
-         * Search Node 
-         * Update Details
-         * Print Node         // 1234:John,Doe,3.9,ComputerScience,Skill1,Skill2,Skill3,Skill4,Skill5
-         */
-
 }

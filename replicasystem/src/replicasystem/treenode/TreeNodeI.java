@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import replicasystem.treenode.SubjectI;
 import replicasystem.treenode.ObserverI;
 import replicasystem.treenode.TreeNodeI;
+import replicasystem.util.Results;
 
 
 public interface TreeNodeI extends SubjectI, ObserverI{
@@ -18,7 +19,7 @@ public interface TreeNodeI extends SubjectI, ObserverI{
     public void insertValues(String firstName, String lastName, String major, double gpa, String[] skills);
     public void updateValues(String[] oldValues, String[] newValues);
 
-    public void printNode();
+    public String printNode();
 
     public int getBnumber();
     
@@ -35,7 +36,5 @@ public interface TreeNodeI extends SubjectI, ObserverI{
 
     public void setRightChild(TreeNodeI rightChild);
     public void setLeftChild(TreeNodeI leftChild);
-
-
 
 }
