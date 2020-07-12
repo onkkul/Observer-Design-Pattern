@@ -39,18 +39,18 @@ Note: Arguments accept the absolute path of the files.
     - The TreeHelper processes one line of input at a time
     - It creates nodes and sets up observers
     - Then it adds details for that node such as Name, Major etc
-	- Once details are added, node sends notifyObservers() call
-	- Nodes are notified and changes are made by update() call
-	- Please remember that both actions are done at node level; thus you will find both methods in StudentRecord
+    - Once details are added, node sends notifyObservers() call
+    - Nodes are notified and changes are made by update() call
+    - Please remember that both actions are done at node level; thus you will find both methods in StudentRecord
     - While processing the modify file:
-		- If an entry is dirty, it is written to **error.txt** file
-		- All entries of same value are replaced
-	- If all goes well(which it will!! :-P) the output is written to respective files in sorted BNumbers.
-	- All exceptions are written to **error.txt** file
+        - If an entry is dirty, it is written to **error.txt** file
+        - All entries of same value are replaced
+    - If all goes well(which it will!! :-P) the output is written to respective files in sorted BNumbers.
+    - All exceptions are written to **error.txt** file
 - Complexity:
-	- Tree used :- **Binary Search Tree**
-	- Avg Case and Best Case time : **O(log(n))**
-	- Worst Case time: **O(n)** --> when all entries are in increasing order of BNumber.
+    - Tree used :- **Binary Search Tree**
+    - Avg Case and Best Case time : **O(log(n))**
+    - Worst Case time: **O(n)** --> when all entries are in increasing order of BNumber.
 
 ## Academic Honesty statement:
 
@@ -62,6 +62,3 @@ determine the action that needs to be taken. "
 
 Onkar Kulkarni
 Date: 07/11/2020
-
-
-
