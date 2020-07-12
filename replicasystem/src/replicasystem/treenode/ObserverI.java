@@ -12,7 +12,7 @@ import replicasystem.treenode.TreeNodeI;
 
 public interface ObserverI{
 
-    public void receiveNotification(TreeNodeI sender);
+    public void update(TreeNodeI sender);
 
     public int getNodeID();
 

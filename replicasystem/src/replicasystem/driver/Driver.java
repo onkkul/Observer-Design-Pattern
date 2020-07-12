@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedWriter;
+import java.io.PrintWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.file.InvalidPathException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 import replicasystem.util.FileProcessor;
 import replicasystem.util.Results;
@@ -33,13 +40,13 @@ public class Driver {
     * @exception ArrayIndexOutOfBoundsException when BNumber or TreeIndex is invalid.
     * @return void
     */
-	private static void executeProcess(String inputFile, String modifyFile){
+	private static void executeProcess(String[] fileNames){
         Results[] all_results = new Results[3];
         try {
 
             TreeI treeHelper = new TreeHelper();
 
-            FileProcessor fileProcessor = new FileProcessor(inputFile); 
+            FileProcessor fileProcessor = new FileProcessor(fileNames[0]); 
             
             String line = fileProcessor.poll();
             while(line != null){
@@ -47,7 +54,7 @@ public class Driver {
                 line = fileProcessor.poll();
             }
 
-            fileProcessor = new FileProcessor(modifyFile); 
+            fileProcessor = new FileProcessor(fileNames[1]); 
             
             line = fileProcessor.poll();
             while(line != null){
@@ -56,17 +63,19 @@ public class Driver {
             }
 
             for (int i = 0; i < 3; i++){
-                String filename = "out"+Integer.toString(i);
-                Results result = new Results(filename);
+                // String filename = "out"+Integer.toString(i);
+                Results result = new Results(fileNames[2+i]);
                 treeHelper.printNodes(result, treeHelper.getTree(i));
                 all_results[i] = result;
-                System.out.println("Tree " + i + " written succesfully to " + filename);
+                System.out.println("Tree " + i + " written succesfully to " + fileNames[2+i]);
             }
         }
         catch(Exception e){
-          e.printStackTrace();
+            e.printStackTrace();
         }
     }
+
+
 	public static void main(String[] args) throws Exception {
 
 		/*
@@ -74,20 +83,26 @@ public class Driver {
 		 * argument value is not given java takes the default value specified in
 		 * build.xml. To avoid that, below condition is used
 		 */
-
-		if (((args.length != 7)) || (args[0].equals("${input}")) || (args[1].equals("${modify}")) || (args[2].equals("${out1}"))) {
-			System.err.printf("Error: Incorrect number of arguments. Program accepts %d arguments.", 3);
+        String[] defaults = {"input", "modify", "out1", "out2", "out3", "error", "debug"};
+        File errorFile = null;
+		if (args.length != 7) {
+			System.err.printf("Error: Incorrect number of arguments. Program accepts %d arguments.", 7);
 			System.exit(0);
 		}
-
-        fileNames = args;
-
-        for (int i = 0; i<7;i++){
-            System.out.println(fileNames[i]);
+        for (int i = 0; i < 7; i++){
+            if (args[i].equals(defaults[i])){
+                System.err.printf("Error: Incorrect input file.");
+                System.exit(0);
+            }
+            else
+                System.out.println("Correct " + defaults[i] + " file :" + args[i]);
         }
-		executeProcess(args[0], args[1]);
+
+        errorFile = new File(args[5]);
+        FileOutputStream errorStream = new FileOutputStream(errorFile);
+        PrintStream printToFile = new PrintStream(errorStream);
+        System.setErr(printToFile);
+
+		executeProcess(args);
 	}
 }   
-
-
-// alias 4='ant -buildfile replicasystem/src/build.xml run -Dinput="input.txt" -Dmodify="modify.txt" -Dmetrics="metrics.txt"'

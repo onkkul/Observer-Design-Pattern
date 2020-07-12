@@ -1,5 +1,5 @@
 0,1234,John:John7
-1,2345,Leo:MathematicalSciences
+1,2345,Leo:
 0,1112,Skill2:Skill8
 1,1112,Skill6:Skill9
 2,1112,Skill1:Skill3

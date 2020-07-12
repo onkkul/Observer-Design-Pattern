@@ -126,6 +126,7 @@ public class StudentRecord implements TreeNodeI{
                 this.major = newValues[i];
             replaceSkill(oldValues[i], newValues[i]);
         }
+        notifyObservers();
     }
 
 
@@ -256,8 +257,8 @@ public class StudentRecord implements TreeNodeI{
      */
     @Override
     public void notifyObservers(){
-        this.observers[0].receiveNotification(this);
-        this.observers[1].receiveNotification(this);
+        this.observers[0].update(this);
+        this.observers[1].update(this);
     }
 
     /**
@@ -266,7 +267,7 @@ public class StudentRecord implements TreeNodeI{
      * @return void
      */
     @Override
-    public void receiveNotification(TreeNodeI sender){
+    public void update(TreeNodeI sender){
         if (sender != null){
             this.bNumber = sender.getBnumber();
             this.firstName = sender.getFirstName();
@@ -275,7 +276,6 @@ public class StudentRecord implements TreeNodeI{
             this.major = sender.getMajor();
             this.gpa = sender.getGPA();
             this.skills = sender.getSkills();
-            this.observers = sender.getObservers();
         }
         return;
     }

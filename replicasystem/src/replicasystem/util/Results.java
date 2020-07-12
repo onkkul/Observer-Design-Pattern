@@ -35,7 +35,7 @@ public class Results implements FileDisplayInterface {
             else {
                 new FileWriter(this.outputFile, false).close();
             }
-        } 
+        }
         catch (IOException fileCreationError) {
           fileCreationError.printStackTrace();
         } 

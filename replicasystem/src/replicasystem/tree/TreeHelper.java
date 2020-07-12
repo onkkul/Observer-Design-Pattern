@@ -218,7 +218,7 @@ public class TreeHelper implements TreeI{
             this.currentNode = createNode("one", bNumber);
         addNodeDetails(details[0], details[1],
             details[3], gpa, skills);
-        System.out.println("Node " + bNumber + " Inserted successfully \n");
+        System.out.println("Node " + bNumber + " Inserted successfully");
         // resetDetails();
         this.currentNode = null;
     }
@@ -227,7 +227,8 @@ public class TreeHelper implements TreeI{
     /**
      * Process the input from "modify" file
      *
-     * @exception
+     * @exception IllegalArgumentException
+     * @exception IndexOutOfBoundsException
      *
      * @return void
      */
@@ -256,6 +257,11 @@ public class TreeHelper implements TreeI{
 
         for (int i = 2; i<inputArray.length;i++){
             String[] temp = inputArray[i].split(":");
+            if (temp.length != 2){
+                System.err.println("Invalid New Values : "+line);
+                return;
+            }   // throw new IllegalArgumentException ("Invalid New Values");
+
             oldValues[i-2] = temp[0];
             newValues[i-2] = temp[1];
         }
@@ -267,6 +273,9 @@ public class TreeHelper implements TreeI{
         else
             updateNode(oldValues, newValues);
         this.currentNode = null;
+
+        // Please note that the update calls are sent by nodes
+        // Thus, you will find them called from StudentRecord
     }
 
 
