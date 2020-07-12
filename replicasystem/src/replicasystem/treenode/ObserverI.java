@@ -15,5 +15,4 @@ public interface ObserverI{
     public void update(TreeNodeI sender);
 
     public int getNodeID();
-
 }

@@ -18,7 +18,7 @@ public class MyLogger{
             case 2: debugLevel = DebugLevel.CONSTRUCTOR;    break;
             case 1: debugLevel = DebugLevel.FILE_PROCESSOR; break;
             case 3: debugLevel = DebugLevel.TREEI;          break;
-            case 4: debugLevel = DebugLevel.TREE_HELPER;     break;
+            case 4: debugLevel = DebugLevel.TREE_HELPER;    break;
             case 5: debugLevel = DebugLevel.TREENODEI;      break;
             case 6: debugLevel = DebugLevel.STUDENT_RECORD; break;
             default: debugLevel = DebugLevel.NONE;          break;
